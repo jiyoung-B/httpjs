@@ -2,6 +2,12 @@ const express = require("express");
 const path = require('path');
 const router = express.Router();
 
+// const oracledb = require("oracledb");
+// const dbconfig = require("../dbconfig.js");
+const mariadb = require('mariadb');
+const dbconfig = require('../dbconfig2.js');
+
+
 // const html = 'text/html; charset=utf-8';
 
 // show index page
@@ -21,11 +27,54 @@ router.post('/sungjuk', (req, res, next) => {
     // console.log(req.body.name, req.body.kor, req.body.eng, req.body.mat);
     let {name, kor, eng, mat} = req.body;
     console.log(name, kor, eng, mat);
-
+async function makeGrade() {
     // 성적처리
     let [tot, avg, grd] = [(+kor + +eng + +mat), Number((+kor + +eng + +mat)/3), '가'];
     console.log(tot, avg, grd);
     // 데이터베이스 처리 - sungjuk 테이블에 insert
+    console.log(name, kor, eng, mat, tot, avg, grd);
+
+    switch(Math.floor(avg/10)){
+        case 10 : case 9 : grd = '수'; break;
+        case 8 : grd = '우'; break;
+        case 7 : grd = '미'; break;
+        case 6 : grd = '양'; break;
+        default : grd = '가'; break;
+    }
+    let params = [name, kor, eng, mat, tot, avg, grd];
+    return params;
+}
+
+    async function insertData (params) {
+    let conn;
+    let sql = 'insert into sungjuk (이름, 국어, 영어, 수학, 총점, 평균, 학점) values (?, ?, ?, ?, ?, ?, ?)'
+        try {
+            let conn= await mariadb.createConnection(dbconfig);
+            console.log('마리아 db 접속 성공')
+
+            let result = await conn.execute(sql,params);
+            await conn.commit();
+            console.log(result);
+        }catch (ex) {
+            console.error(ex);
+        } finally {
+            if (conn) {
+                try {
+                    await conn.close();
+                    console.log('마리아 db 접속 해제')
+                } catch (ex) {
+                    console.error(ex);
+                }
+            }
+        }
+    }
+
+function main(){
+    makeGrade().then(insertData)
+}
+main();
+
+
 
     // hw)입력받은 것을 총점, 평균, 학점으로 데이터 넣어봐
     // 라우팅: 요청이오면 요청에 적합한 view를 띄우는 것 - 데이터 처리 까지 하면 일이 많아, 안내만해주고 컨트롤러로 넘기는게 좋아
