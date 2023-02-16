@@ -1,0 +1,39 @@
+{{#section 'css'}}
+{{/section}}
+
+{{#section 'script'}}
+<script>
+    const processSungJuk = () => {
+        let frm = document.sjfrm;
+        if (frm.name.value == '') alert('이름은?');
+        else if (frm.kor.value == '') alert('국어는?');
+        else if (frm.eng.value == '') alert('영어는?');
+        else if (frm.mat.value == '') alert('수학은?');
+        else {
+            frm.method = 'post';
+            frm.enctype = 'application/x-www-form-urlencoded' // 기본값이라 생략해도 돼. 명시적.
+            frm.submit(); // action 따로 쓸 필요 없어
+        }
+
+    };
+
+    let sjbtn = document.querySelector('#sjbtn');
+
+    sjbtn.addEventListener('click', processSungJuk);
+
+</script>
+{{/section}}
+
+<h1>sungjuk 등록 페이지입니다</h1>
+<form name="sjfrm">
+    <div><label for="name">이름</label>
+         <input type="text" name="name" id="name"></div>
+    <div><label for="kor">국어</label>
+        <input type="text" name="kor" id="kor"></div>
+    <div><label for="eng">영어</label>
+        <input type="text" name="eng" id="eng"></div>
+    <div><label for="mat">수학</label>
+        <input type="text" name="mat" id="mat"></div>
+    <div><button type="button" id="sjbtn">입력완료</button></div>
+</form>
+
