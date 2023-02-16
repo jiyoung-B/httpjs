@@ -47,14 +47,16 @@ async function makeGrade() {
 
     async function insertData (params) {
     let conn;
-    let sql = 'insert into sungjuk (이름, 국어, 영어, 수학, 총점, 평균, 학점) values (?, ?, ?, ?, ?, ?, ?)'
+    let sql1 = 'create table sungjuk (sjno int auto_increment, name varchar(50) not null, kor int not null, eng int not null, mat int not null, tot int not null, avg int not null, grd varchar(10), primary key (sjno))';
+    //let sql2 = 'insert into sungjuk (name, kor, eng, mat, tot, avg, grd) values (?, ?, ?, ?, ?, ?, ?)'
         try {
             let conn= await mariadb.createConnection(dbconfig);
             console.log('마리아 db 접속 성공')
 
-            let result = await conn.execute(sql,params);
+            let result = await conn.execute(sql1);
+            //let result = await conn.execute(sql2, params);
             await conn.commit();
-            console.log(result);
+            console.log(result, '-----------');
         }catch (ex) {
             console.error(ex);
         } finally {
