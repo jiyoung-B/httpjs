@@ -11,10 +11,13 @@ class SungJuk {
         resultSet: true,
         outFormat: oracledb.OUT_FORMAT_OBJECT
     };
-   // selectsql = 'select sjno, name, kor, eng, mat, regdate from sungjuk order by sjno desc';
-    selectsql = `select sjno, name, kor, eng, mat' +
-        'to_char(regdate, 'YYYY-MM-DD') from sungjuk' +
-    'order by sjno desc`;
+    //selectsql = 'select sjno, name, kor, eng, mat, regdate from sungjuk order by sjno desc';
+    selectsql = ` select sjno, name, kor, eng, mat, ` +
+                ` to_char(regdate, 'YYYY-MM-DD') from sungjuk ` +
+                ` order by sjno desc `;
+    selectOnesql = ` select sjno, name, kor, eng, mat, tot, avg, grd, ` +
+                    ` to_char(regdate, 'YYYY-MM-DD HH:MI:SS') regdate ` +
+                    ` from sungjuk where sjno = :1 `;
 
     constructor(name, kor, eng, mat, tot, avg, grd) {
         this.name = name;
@@ -56,22 +59,48 @@ class SungJuk {
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                result = new SungJuk(row[1], row[2], row[3], row[4]);
-                result.sjno = row[0]; // 정의되지 않았지만 직접 생성해서 만드는거
-                result.regdate = row[5]; // 정의되지 않았지만 직접 생성해서 만드는거
-                sjs.push(sjs);
+                let sj = new SungJuk(row[1], row[2], row[3], row[4]);
+                sj.sjno = row[0]; // 정의되지 않았지만 직접 생성해서 만드는거
+                sj.regdate = row[5]; // 정의되지 않았지만 직접 생성해서 만드는거
+                sjs.push(sj);
             }
         } catch(e){
             console.log(e);
         }finally {
             await oracledb.closeConn(conn);
         }
-        return await result;
+        return await sjs;
     }
 
 
 
     // 성적 상세조회
+    async selectOne(sjno) {
+        let conn = null;
+        let result = null;
+        let sjs = [];
+
+        try {
+            conn = await oracledb.makeConn();
+            result = await conn.execute(this.selectOnesql, [sjno], this.options); // [sjno] 하나니까 변수 params [] 따로 선언하지 않아도 된다.
+            let rs = result.resultSet;
+            let row = null;
+            while((row = await rs.getRow())){
+               let sj = new SungJuk(row[1], row[2], row[3], row[4], row[5], row[6], row[7]);
+                sj.sjno = row[0]; // 정의되지 않았지만 직접 생성해서 만드는거
+                sj.regdate = row[8]; // 정의되지 않았지만 직접 생성해서 만드는거
+                sjs.push(sj);
+            }
+        } catch(e){
+            console.log(e);
+        }finally {
+            await oracledb.closeConn(conn);
+        }
+        return await sjs;
+
+
+
+    }
 
 }
 module.exports = SungJuk;

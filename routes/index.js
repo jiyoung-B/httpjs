@@ -19,6 +19,16 @@ router.get('/showsungjuk', async (req, res) => {
     console.log(await sjs);
     res.render('showsungjuk',{title:'성적전체보기', sjs: await sjs}); // 동적으로 생성된 데이터는 이렇게 보내겠다 -> hbs로
 });
+
+router.get('/viewsungjuk', async (req, res) => {
+    let sjno = req.query.sjno; //  querystring의 매개변수 추출 - 폼을 통해 넘기는 것이 아니어서 body가 아니라query string으로 받아서 param으로 받아.
+
+    let sjs = new SungJuk().selectOne(sjno).then(async result => { return await result;}); // await promise로 넘어온것은 그냥 받으면 안돼. then으로 풀고 await로 return 받아야돼.
+    console.log(await sjs);
+
+    res.render('viewsungjuk',{title:'성적상세보기', sjs: await sjs}); // 동적으로 생성된 데이터는 이렇게 보내겠다 -> hbs로
+});
+
 router.post('/sungjuk',(req, res, next) => { // async 뺐음
     // 폼으로 전송된 데이터들은 req.body, req.body.폼이름 등으로 확인 가능
     // console.log(req);
