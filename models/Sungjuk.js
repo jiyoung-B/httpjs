@@ -54,7 +54,7 @@ class SungJuk {
                 result = new SungJuk(row[1], row[2], row[3], row[4]);
                 result.sjno = row[0]; // 정의되지 않았지만 직접 생성해서 만드는거
                 result.regdate = row[5]; // 정의되지 않았지만 직접 생성해서 만드는거
-                // sjs.push(sjs);
+                sjs.push(sjs);
             }
         } catch(e){
             console.log(e);
