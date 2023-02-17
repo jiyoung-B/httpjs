@@ -10,7 +10,8 @@
         <th>영어</th><th>수학</th><th>등록일</th></tr>
     <!-- 리스트행 시작  -->
     {{#sjs}} <!--객체로 넘어오는 것들은 앞에 #을 붙인다.-->
-    <tr><td>{{sjno}}</td><td>{{name}}</td><td>{{kor}}</td>
+    <tr><td>{{sjno}}</td>
+        <td><a href="/viewsungjuk?sjno={{sjno}}"></a>{{name}}</td><td>{{kor}}</td>
         <td>{{eng}}</td><td>{{mat}}</td><td>{{regdate}}</td></tr>
     <!--값은 넘어오는 {key}}(=멤버변수) 이름으로 쓴다-->
     {{/sjs}}

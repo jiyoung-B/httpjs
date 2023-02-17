@@ -11,7 +11,11 @@ class SungJuk {
         resultSet: true,
         outFormat: oracledb.OUT_FORMAT_OBJECT
     };
-    selectsql = 'select sjno, name, kor, eng, mat, regdate from sungjuk order by sjno desc';
+   // selectsql = 'select sjno, name, kor, eng, mat, regdate from sungjuk order by sjno desc';
+    selectsql = `select sjno, name, kor, eng, mat' +
+        'to_char(regdate, 'YYYY-MM-DD') from sungjuk' +
+    'order by sjno desc`;
+
     constructor(name, kor, eng, mat, tot, avg, grd) {
         this.name = name;
         this.kor = kor;
@@ -44,6 +48,7 @@ class SungJuk {
     async select() {
         let conn = null;
         let result = null;
+        let sjs = [];
 
         try {
             conn = await oracledb.makeConn();
