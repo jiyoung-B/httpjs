@@ -2,6 +2,7 @@ const express = require("express");
 const path = require('path');
 const SungJuk = require('../models/Sungjuk');
 
+
 const router = express.Router();
 
 // show index page
@@ -13,11 +14,6 @@ router.get('/', (req, res) => {
 });
 router.get('/sungjuk', (req, res) => {
     res.render('sungjuk',{title:'성적처리'});
-});
-router.get('/showsungjuk', async (req, res) => {
-    let sjs = new SungJuk().select().then(async result => { return await result;}); // await promise로 넘어온것은 그냥 받으면 안돼. then으로 풀고 await로 return 받아야돼.
-    console.log(await sjs);
-    res.render('showsungjuk',{title:'성적전체보기', sjs: await sjs}); // 동적으로 생성된 데이터는 이렇게 보내겠다 -> hbs로
 });
 router.post('/sungjuk',(req, res, next) => { // async 뺐음
     // 폼으로 전송된 데이터들은 req.body, req.body.폼이름 등으로 확인 가능
