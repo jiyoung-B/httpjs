@@ -3,6 +3,7 @@ const path = require('path');
 const logger = require('morgan'); // 로그 출력기
 const { engine } = require('express-handlebars')
 const bodyParser = require('body-parser'); // 폼 처리기
+const oracledb = require('./models/Oracle');
 
 // 라우팅 외부 작성
 const indexRouter = require('./routes/index');
@@ -40,9 +41,9 @@ app.use(express.json());
 // 폼으로 넘어오는 데이터를 보려면 반드시 위에 두줄이 있어야 한다~
 app.use(express.urlencoded({extended:false}));
 app.use(bodyParser.json()); // 전송된 폼 데이터는 json 형식
-
 // app.use(bodyParser.text()); // enctype이 text/plain일때 필요 (비추)
 // app.use(bodyParser.raw()); - 차이없어서 지움
+oracledb.initConn(); // 오라클 instant client 초기화 - 마리아는 알아서 잘되는데 오라클은 설정필요/
 
 // index에 대한 route handler 지정 - index 찾는 요청이 들어오면 얘가 처리한다.
 app.use('/', indexRouter);

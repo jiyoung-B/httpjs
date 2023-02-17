@@ -1,14 +1,9 @@
 const express = require("express");
 const path = require('path');
+const SungJuk = require('../models/Sungjuk');
 
-const oracledb = require("oracledb");
-const dbconfig = require("../dbconfig.js");
-// const mariadb = require('mariadb');
-// const dbconfig = require('../dbconfig2.js');
 
 const router = express.Router();
-
-// const html = 'text/html; charset=utf-8';
 
 // show index page
 router.get('/', (req, res) => {
@@ -20,7 +15,7 @@ router.get('/', (req, res) => {
 router.get('/sungjuk', (req, res) => {
     res.render('sungjuk',{title:'성적처리'});
 });
-router.post('/sungjuk', async (req, res, next) => {
+router.post('/sungjuk',(req, res, next) => { // async 뺐음
     // 폼으로 전송된 데이터들은 req.body, req.body.폼이름 등으로 확인 가능
     // console.log(req);
     // console.log(req.body);
@@ -60,37 +55,23 @@ router.post('/sungjuk', async (req, res, next) => {
      (sjno, name, kor, eng, mat, tot, avg, grd)
      values (sjno.nextval, 'abc123', 11,22,33,44,55.1,'가');
      * */
-    // 데이터 베이스 처리
-    let conn = null;
-    let sql = 'insert into sungjuk' +
-        ' (sjno, name, kor, eng, mat, tot, avg, grd)' +
-        ' values (sjno.nextval, :1, :2, :3, :4, :5, :6, :7) ';
-    let params = [name, kor, eng, mat, tot, avg, grd];
-    try {
-        oracledb.initOracleClient({libDir: 'C:/Java/instantclient_19_17'});
-        /*
-        오류 : Oracle Client library has already been initialized
-        한번 연결한 db를 종료하지 않고 다시 연결해서 나는 오류로
-        conn.close()를 await로 비동기 처리 해준다.? 소용없음 ..
-        그렇다면 해결방법은??
-        */
-        conn = await oracledb.getConnection(dbconfig);
-        let result = await conn.execute(sql, params);
-        await conn.commit();
-        console.log(result);
-    } catch (e) {
-        console.log(e);
-    } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    }
-
-
+        // 데이터 베이스 처리 - sungjuk 테이블에 insert
+        // let conn = null;
+        // let sql = 'insert into sungjuk' +
+        //     ' (sjno, name, kor, eng, mat, tot, avg, grd)' +
+        //     ' values (sjno.nextval, :1, :2, :3, :4, :5, :6, :7) ';
+        // let params = [name, kor, eng, mat, tot, avg, grd];
+        // try {
+        //     conn = await oracledb.makeConn();
+        //     let result = await conn.execute(sql, params);
+        //     await conn.commit();
+        //     console.log(result);
+        // } catch (e) {
+        //     console.log(e);
+        // } finally {
+        //     await oracledb.closeConn(conn);
+        // }
+    new SungJuk(name, kor, eng, mat, tot, avg, grd).insert();
     /**
      *
      *  async function makeGrade() {
