@@ -60,6 +60,7 @@ router.post('/sungjuk', async (req, res, next) => {
      (sjno, name, kor, eng, mat, tot, avg, grd)
      values (sjno.nextval, 'abc123', 11,22,33,44,55.1,'가');
      * */
+    // 데이터 베이스 처리
     let conn = null;
     let sql = 'insert into sungjuk' +
         ' (sjno, name, kor, eng, mat, tot, avg, grd)' +
